@@ -1,0 +1,29 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Documento "atual" de cada dashboard
+    match /dashboards/{dashboardId} {
+      allow read: if true;
+      allow write: if true;
+
+      // Histórico de versões
+      match /versions/{versionId} {
+        allow read: if true;
+        allow write: if true;
+      }
+    }
+  }
+}
+
+// ATENÇÃO:
+// As regras acima liberam leitura/escrita para qualquer pessoa (modo "público").
+// Isso é aceitável só se o link do dashboard não for divulgado publicamente,
+// ou enquanto estiver em fase de testes.
+//
+// Para restringir a apenas usuários autenticados, troque por:
+//
+//   allow read, write: if request.auth != null;
+//
+// E ative "Authentication" no Firebase (ex.: login por e-mail/senha ou Google).
